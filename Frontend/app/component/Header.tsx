@@ -1,9 +1,10 @@
-'use client'
+
 import {
   AppBar,
   Typography,
 } from "@mui/material";
 import Search from "./Search";
+import AuthButton from "../../components/header-auth";
 export default function Nav() {
    
   return (
@@ -14,8 +15,9 @@ export default function Nav() {
                     MEET-UP
             </Typography>
          </div>
-         <div className="col-span-9 flex justify-start  items-center" >
+         <div className="col-span-9 flex justify-start gap-10  items-center" >
              <Search />
+             <AuthButton />
          </div>
      </div>
    

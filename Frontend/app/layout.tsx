@@ -3,7 +3,7 @@
 import { ThemeProvider } from "next-themes";
 import Header from "./component/Header"
 import "./globals.css";
-
+import {Providers} from './Redux/Provider'
 
 
 export const metadata = {
@@ -26,8 +26,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         > */}
+        <Providers>
           <Header />
           {children}
+          </Providers>
         {/* </ThemeProvider> */}
       </body>
     </html>

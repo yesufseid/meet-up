@@ -8,56 +8,44 @@ import {
   Input,
 } from "@mui/material";
 import Image from "next/image";
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../Redux/store";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 
 const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {activiy,loading,error} = useSelector((state: RootState) => state.activity);
   const [formData, setFormData] = useState({
-    title: "",
+    category: "",
     description: "",
     phone: "",
     link: "",
-    startTime: "",
-    duration: "",
-    expireTime: "",
-    images: [] as File[],
+    time:"",
+    duration:2,
+    place_name:"",
+    images: [] 
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e:any) => {
-    if (e.target.files) {
-      setFormData((prev) => ({
-        ...prev,
-        images: Array.from(e.target.files),
-      }));
-    }
+    // if (e.target.files) {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     images: Array.from(e.target.files),
+    //   }));
+    // }
   };
-  const generateRandomString = () => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < 20; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      result += characters[randomIndex];
-    }
-    return result;
-  };
-  const handleSubmit = () => {
-    const draft = generateRandomString();
-             window.localStorage.setItem(
-               draft,
-               JSON.stringify({
-                 ...formData,
-                 lng,
-                 lat
-               })
-             );
+
+  const handleSubmit =async() => {
+      dispatch({ type: "activity/create",payload:{...formData,location_lat:lat,location_lng:lng}});
   };
 
   return (
@@ -76,7 +64,7 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
       }}
     >
       <Typography variant="h6">Post Activity</Typography>
-      <TextField name="title" label="Title" fullWidth onChange={handleChange} />
+      <TextField name="category" label="category**"placeholder="sport,study,party,..."  required={true} fullWidth onChange={handleChange} />
       <TextField
         name="description"
         label="Description"
@@ -101,9 +89,10 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
         onChange={handleChange}
       />
       <TextField
-        name="startTime"
+        name="time"
         type="datetime-local"
-        label="Start Time"
+        label="Start Time **"
+        required={true}
         fullWidth
         InputLabelProps={{ shrink: true }}
         sx={{ mt: 2 }}
@@ -111,21 +100,15 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
       />
       <TextField
         name="duration"
-        label="Duration (min)"
+        label="Duration (hr)"
+        required={true}
         type="number"
         fullWidth
         sx={{ mt: 2 }}
         onChange={handleChange}
       />
-      <TextField
-        name="expireTime"
-        type="datetime-local"
-        label="Expire Time"
-        fullWidth
-        InputLabelProps={{ shrink: true }}
-        sx={{ mt: 2 }}
-        onChange={handleChange}
-      />
+    <TextField name="place_name" label="place_name *"    sx={{ mt: 2 }} required={true} fullWidth onChange={handleChange} />
+     
       <Input
         type="file"
         inputProps={{ multiple: true }}
@@ -148,8 +131,9 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
         </Box>
       )}
 
-      <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSubmit}>
-        Save
+      <Button disabled={formData.category==="" || formData.duration===2|| formData.time===""|| formData.place_name===""} 
+      variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSubmit}>
+        {loading?"posting...":error?"try-again":"save"}
       </Button>
     </Box>
   );
