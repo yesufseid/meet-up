@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
-import { createClient } from "@/utils/supabase/server";
+
 import { redirect } from "next/navigation";
 
 
@@ -19,6 +19,7 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
   const {activiy,loading,error} = useSelector((state: RootState) => state.activity);
   const [formData, setFormData] = useState({
     category: "",
+    title:"",
     description: "",
     phone: "",
     link: "",
@@ -64,6 +65,7 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
       }}
     >
       <Typography variant="h6">Post Activity</Typography>
+      <TextField name="title" label="title**"  required={true} fullWidth onChange={handleChange} />
       <TextField name="category" label="category**"placeholder="sport,study,party,..."  required={true} fullWidth onChange={handleChange} />
       <TextField
         name="description"
@@ -131,7 +133,7 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
         </Box>
       )}
 
-      <Button disabled={formData.category==="" || formData.duration===2|| formData.time===""|| formData.place_name===""} 
+      <Button disabled={formData.category==="" || formData.duration===2|| formData.time===""|| formData.place_name==="" || formData.title===""} 
       variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSubmit}>
         {loading?"posting...":error?"try-again":"save"}
       </Button>

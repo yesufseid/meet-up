@@ -36,14 +36,9 @@ const SimpleActivityCard: React.FC<SimpleActivityCardProps> = ({
       }}
     >
       <CardContent>
-        <Typography variant="h6" fontWeight="bold">
+        <Typography variant="h6">
           {title}
         </Typography>
-
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          {description}
-        </Typography>
-
         <Box>
           <Typography variant="caption" color="text.secondary">
             Start: {startTime.toLocaleString()}

@@ -4,7 +4,7 @@ import PollutionMap from "./Map";
 import Sidebar from "./Side-bar";
 export default function HomeClient() {
   return (
-    <div className="grid grid-cols-12 gap-5 h-20">
+    <div className="grid grid-cols-12 gap-5">
     <div className="col-span-3">
          <Sidebar />
     </div>

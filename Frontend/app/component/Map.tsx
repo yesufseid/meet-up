@@ -17,8 +17,12 @@ import {
   Box,
 } from "@mui/material";
 import L from "leaflet";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../Redux/store";
 
 export default function PollutionMap(){
+   const dispatch = useDispatch<AppDispatch>();
+  const {activiy,loading,error} = useSelector((state: RootState) => state.activity);
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;
     lng: number;
@@ -40,12 +44,31 @@ export default function PollutionMap(){
       });
     
   const MapClickHandler = () => {
-    useMapEvents({
+    const map=useMapEvents({
       click: (event) => {
         const { lat, lng } = event.latlng;
         setSelectedLocation({ lat, lng });
       },
+      moveend: () => {
+        const zoom = map.getZoom();
+        if (zoom === 16) {
+          const bounds = map.getBounds();
+          const sw = bounds.getSouthWest(); // bottom left
+          const ne = bounds.getNorthEast(); // top right
+          dispatch({ type: "activity/fetchActivity",payload:{nelat:ne.lat,nelng:ne.lng,swlat:sw.lat,swlng:sw.lng}});
+        }
+      },
+      zoomend: () => {
+        const zoom = map.getZoom();
+        if (zoom === 16) {
+          const bounds = map.getBounds();
+          const sw = bounds.getSouthWest();
+          const ne = bounds.getNorthEast();
+          dispatch({ type: "activity/fetchActivity",payload:{nelat:ne.lat,nelng:ne.lng,swlat:sw.lat,swlng:sw.lng}});
+        }
+      },
     });
+    
     return null;
   };
 
@@ -67,29 +90,13 @@ export default function PollutionMap(){
     }));
   };
 
- 
-
-  // const handleSubmit = () => {
-  //   if (popupData.type && popupData.description && selectedLocation) {
-  //     const draft = generateRandomString();
-  //       window.localStorage.setItem(
-  //         draft,
-  //         JSON.stringify({
-  //           ...popupData,
-  //           ...selectedLocation,
-  //         })
-  //       );
-  //       redirect(`/createReport/${draft}`);
-  //     }
-  
-  // };
 
 
   return (
-    <Box sx={{ width: "100%", height: "600px" }}>
+    <Box sx={{ width: "100%", height: "610px" }}>
       <MapContainer
         center={[9.03, 38.75]} // Default center (e.g., Addis Ababa)
-        zoom={12}
+        zoom={15}
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
         <LayersControl position="topright">

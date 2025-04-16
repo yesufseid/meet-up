@@ -4,12 +4,12 @@ import {setActivity,setLoading,setError,addActivity} from "./dataSlice"
 import { getActivity,createActivity} from "../api/index";
 
 
-function* fetchActivity(): Generator<any, void, any>{
+function* fetchActivity(action:any): Generator<any, void, any>{
   try {
     yield put(setError(false));
     yield put(setLoading(true));
      // Pass arguments to GetGraduates
-     const response =yield call(getActivity);
+     const response =yield call(getActivity,action.payload);
     yield put(setLoading(false));
     if(response.error){
       yield put(setError(true))
