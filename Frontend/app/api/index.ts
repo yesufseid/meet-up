@@ -1,11 +1,8 @@
 "use server"
 import { createClient } from '@/utils/supabase/server';
 
-
-
 const getActivity=async(location:any)=>{
   const supabase = await createClient();
-  console.log(location);
   const { data, error } = await supabase
     .from("activities")
     .select("*")
@@ -17,8 +14,6 @@ const getActivity=async(location:any)=>{
       console.error("Failed to get activity:", error.message);
       return error;
     }
-    console.log(data);
-    
     return data;
 }
 
@@ -38,6 +33,24 @@ const getActivity=async(location:any)=>{
   return data;
 };
 
+const uploadImage = async (file: File) => {
+  const supabase = await createClient();
+  const filePath = `activity-${Date.now()}-${file.name}`;
+  const { error } = await supabase.storage
+    .from('activity-images') // Your bucket name
+    .upload(filePath, file);
+
+  if (error) {
+    console.error('Upload error:', error.message);
+    return null;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from('activity-images')
+    .getPublicUrl(filePath);
+
+  return publicUrlData.publicUrl;
+};
 
 
-export {createActivity,getActivity}
+export {createActivity,getActivity,uploadImage}

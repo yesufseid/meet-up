@@ -5,6 +5,7 @@ import React, { useState,
 } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import ActivityPopup from "./Popup";
+import PopupCard from "./popupcard";
 import {
   MapContainer,
   TileLayer,
@@ -20,9 +21,23 @@ import L from "leaflet";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
 
+type activityProps={
+  id:string
+  title:string
+  description:string
+  phone:string,
+  link:string,
+  startTime:string,
+  duration:string,
+  expireTime:string,
+  location_lat:number,
+  location_lng:number
+  images:[] 
+
+}
 export default function PollutionMap(){
    const dispatch = useDispatch<AppDispatch>();
-  const {activiy,loading,error} = useSelector((state: RootState) => state.activity);
+  const {activity,loading,error} = useSelector((state: RootState) => state.activity);
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;
     lng: number;
@@ -42,7 +57,35 @@ export default function PollutionMap(){
         shadowUrl:
           "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
       });
-    
+      const icons ={
+          sport:  L.divIcon({
+            html: `<div style="font-size: 24px;">🏃‍♂️</div>`,
+            className: '',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+          }),
+          food:L.divIcon({
+            html: `<div style="font-size: 24px;">🏃‍♂️</div>`,
+            className: '',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+          }),
+          music:L.divIcon({
+            html: `<div style="font-size: 24px;">🏃‍♂️</div>`,
+            className: '',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+          }),
+          default:L.divIcon({
+            html: `<div style="font-size: 24px;">🏃‍♂️</div>`,
+            className: '',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+          }),
+        };
+        const getIconByCategory = (category: string) => {
+          return icons[category as keyof typeof icons] || icons.default;
+        }; 
   const MapClickHandler = () => {
     const map=useMapEvents({
       click: (event) => {
@@ -123,7 +166,23 @@ export default function PollutionMap(){
         </LayersControl>
 
         <MapClickHandler />
-
+        {activity&& activity.map((ac)=>{
+          return  (
+            <Marker key={ac.id} position={[ac.location_lat, ac.location_lng]}   icon={getIconByCategory(ac.category)}  >
+              <div className="h-[500px] overflow-auto">
+              <Popup>
+              <PopupCard  title={ac.title} description={ac.description}
+                phone={ac.phone}
+                link={ac.link}
+                startTime={ac.time}
+                duration={ac.duration}
+                images={ac.images}
+                category={ac.category} />
+              </Popup>
+              </div>
+            </Marker>
+          )
+        })}
         {selectedLocation && (
           <Marker position={[selectedLocation.lat, selectedLocation.lng]}>
             <div className="h-[500px] overflow-auto">

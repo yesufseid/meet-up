@@ -7,20 +7,24 @@ type activityProps={
   description:string
   phone:string,
   link:string,
-  startTime:string,
+  time:string,
   duration:string,
-  expireTime:string,
-  images:[] 
+  location_lat:number,
+  location_lng:number
+  images:[] ,
+  category:string
 
 }
 interface PlayerState {
-  activiy:activityProps[];
+  useractivity:activityProps[];
+  activity:activityProps[];
   loading: boolean;
   error: boolean;
 }
 
 const initialState: PlayerState = {
-  activiy: [],
+  activity: [],
+  useractivity:[],
   loading: false,
   error: false,
 };
@@ -29,10 +33,16 @@ const  dataSlice = createSlice({
   initialState,
   reducers: {
     setActivity: (state, action) => {
-      state.activiy= action.payload;
+      state.activity= action.payload;
     },
     addActivity: (state, action) => {
-      state.activiy.push(action.payload)
+      state.activity.push(action.payload)
+    },
+    setuserActivity: (state, action) => {
+      state.useractivity= action.payload;
+    },
+    adduserActivity: (state, action) => {
+      state.useractivity.push(action.payload)
     },
   
     setLoading: (state, action) => {
@@ -44,5 +54,5 @@ const  dataSlice = createSlice({
   },
 });
 
-export const { addActivity,setActivity,setError,setLoading,} =dataSlice.actions;
+export const { addActivity,setActivity,setError,setLoading,adduserActivity,setuserActivity} =dataSlice.actions;
 export default dataSlice.reducer;

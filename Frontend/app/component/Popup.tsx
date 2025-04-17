@@ -10,13 +10,14 @@ import {
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
-
+import {uploadImage} from"../api/index"
 import { redirect } from "next/navigation";
 
 
 const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {activiy,loading,error} = useSelector((state: RootState) => state.activity);
+  const {loading,error} = useSelector((state: RootState) => state.activity);
+  const [preview,setPreview]=useState<any>([])
   const [formData, setFormData] = useState({
     category: "",
     title:"",
@@ -26,7 +27,7 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
     time:"",
     duration:2,
     place_name:"",
-    images: [] 
+    images:[] 
   });
 
   const handleChange = (
@@ -36,13 +37,19 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
       setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e:any) => {
-    // if (e.target.files) {
-    //   setFormData((prev) => ({
-    //     ...prev,
-    //     images: Array.from(e.target.files),
-    //   }));
-    // }
+  const handleImageChange = async(e:React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+      if (e.target.files) {
+        setPreview(Array.from(e.target.files))
+    }
+    if (!files) return;
+    const uploadedUrls:any=[];
+    for (const file of Array.from(files)) {
+      const url = await uploadImage(file);
+      if (url) uploadedUrls.push(url);
+    }
+    console.log('All uploaded image URLs:', uploadedUrls);
+    setFormData((prev) => ({ ...prev,images:uploadedUrls}));
   };
 
   const handleSubmit =async() => {
@@ -118,9 +125,9 @@ const ActivityPopup = ({lat,lng}:{lat:number,lng:number}) => {
         onChange={handleImageChange}
       />
 
-      {formData.images.length > 0 && (
+      {preview.length > 0 && (
         <Box sx={{ display: "flex", gap: 1, overflowX: "auto", mt: 2 }}>
-          {formData.images.map((img, idx) => (
+          {preview.map((img:any, idx:number) => (
             <Image
               key={idx}
               src={URL.createObjectURL(img)}

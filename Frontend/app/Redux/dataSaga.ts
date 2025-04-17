@@ -1,6 +1,6 @@
 
 import { call, put, takeEvery } from "redux-saga/effects";
-import {setActivity,setLoading,setError,addActivity} from "./dataSlice"
+import {setActivity,setLoading,setError,addActivity,adduserActivity,setuserActivity} from "./dataSlice"
 import { getActivity,createActivity} from "../api/index";
 
 
@@ -30,7 +30,7 @@ function* create(action:any): Generator<any, void, any>{
     if(response.error){
       yield put(setError(true))
     }else{
-      yield put(addActivity(response))
+      yield put(adduserActivity(response))
     }
   } catch (error) {
     console.error("Failed to fetch stats:", error);
