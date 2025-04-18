@@ -11,7 +11,7 @@ type SimpleActivityCardProps = {
   title: string;
   description: string;
   time: string; // ISO string
-  duration: number; // in minutes
+  duration:string; // in minutes
 };
 
 const SimpleActivityCard: React.FC<SimpleActivityCardProps> = ({
@@ -21,7 +21,7 @@ const SimpleActivityCard: React.FC<SimpleActivityCardProps> = ({
   duration,
 }) => {
   const startTime = new Date(time);
-  const endTime = new Date(startTime.getTime() + duration * 60000);
+ 
 
   return (
     <Card
@@ -45,7 +45,7 @@ const SimpleActivityCard: React.FC<SimpleActivityCardProps> = ({
           </Typography>
           <br />
           <Typography variant="caption" color="text.secondary">
-            End: {endTime.toLocaleString()}
+            durtaion :{duration}
           </Typography>
         </Box>
       </CardContent>

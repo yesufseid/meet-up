@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+
 import {
   Box,
   TextField,
@@ -20,7 +21,6 @@ const Search = () => {
   );
 
   return (
-    
         <Box sx={{ width: 700 }}>
           <Autocomplete
             freeSolo

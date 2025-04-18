@@ -5,6 +5,7 @@ import {
 } from "@mui/material";
 import Search from "./Search";
 import AuthButton from "../../components/header-auth";
+
 export default function Nav() {
    
   return (

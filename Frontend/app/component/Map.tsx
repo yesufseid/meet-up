@@ -1,8 +1,7 @@
 "use client";
 import "leaflet/dist/leaflet.css";
-import React, { useState,
-
-} from "react";
+import React, { useState} from "react";
+import SearchControl from "./SearchControl"
 import { SelectChangeEvent } from "@mui/material";
 import ActivityPopup from "./Popup";
 import PopupCard from "./popupcard";
@@ -20,6 +19,7 @@ import {
 import L from "leaflet";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../Redux/store";
+
 
 type activityProps={
   id:string
@@ -142,6 +142,7 @@ export default function PollutionMap(){
         zoom={15}
         style={{ height: "100%", width: "100%", zIndex: 1 }}
       >
+        <SearchControl />
         <LayersControl position="topright">
           <LayersControl.BaseLayer checked name="OpenStreetMap">
             <TileLayer
@@ -170,7 +171,7 @@ export default function PollutionMap(){
           return  (
             <Marker key={ac.id} position={[ac.location_lat, ac.location_lng]}   icon={getIconByCategory(ac.category)}  >
               <div className="h-[500px] overflow-auto">
-              <Popup>
+              <Popup  offset={[100,0]} >
               <PopupCard  title={ac.title} description={ac.description}
                 phone={ac.phone}
                 link={ac.link}
